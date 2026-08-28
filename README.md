@@ -141,6 +141,19 @@
 - 下方聊天区域，支持发送消息和查看历史对话
 - 每条AI回复含报告时显示下载按钮
 
+### 9. 模型微调与轻量化 NLP 级联
+- 在 `finance_model_finetuning/` 目录下提供了完整的微调 Pipeline。
+- 使用金融领域数据集对 `mengzi-bert-base-fin` 进行序列标注（NER）与文本分类（Intent Classification）微调。
+- 通过“轻量级模型预解析 + LLM 深度生成”的级联架构，降低 CPU/GPU 计算负载，将意图解析延迟控制在 10ms 以内。
+  ## 模型微调 (Model Fine-Tuning)
+
+  项目包含针对金融意图识别与实体抽取的微调代码，位于 `finance_model_finetuning/` 目录：
+  
+  1. **基础模型**：`Langboat/mengzi-bert-base-fin`
+  2. **微调任务**：
+     - 意图分类（Intent Classification）
+     - 金融命名实体识别（Financial NER）
+
 ## 安装步骤
 
 ### 1. 克隆项目
