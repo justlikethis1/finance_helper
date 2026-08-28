@@ -79,6 +79,9 @@
 ### 模型
 - **本地Llama模型**：默认使用4-bit量化的Finance-Llama-8B模型
 - **DeepSeek API**：可选，提供在线模型推理
+- **金融领域微调 NLP 模型 (`mengzi-bert-base-fin`)**：
+  - 基于 Langboat 孟子金融预训练 Bert 模型进行下游任务微调（Fine-Tuning）。
+  - 专门负责高精度的**意图识别 (Intent Recognition)**、**股票名称/代码命名实体识别 (NER)** 与**用户输入解析**，避免 LLM 在简单 NLP 任务上的高延迟与算力浪费。
 
 ### 前端
 - **HTML/CSS/JavaScript**：原生前端开发
