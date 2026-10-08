@@ -90,7 +90,9 @@ async def lifespan(app: FastAPI):
                     max_new_tokens=10,  # 减少生成长度
                     temperature=0.1     # 使用低温度加速生成
                 )
-                if test_response and "模型未加载" not in test_response:
+                if test_response and not test_response.startswith(
+                    ("API调用失败:", "API响应格式错误", "生成失败:")
+                ):
                     print("✅ 模型验证通过，可以正常生成响应")
                 else:
                     print("❌ 模型验证失败，无法正常生成响应")
@@ -258,12 +260,16 @@ async def chat(request: ChatRequest):
                                 # 用户明确要求生成报告
                                 logger.info(f"开始为股票代码 {stock_code} 生成投资报告")
                                 report_result = await summary_agent.generate_investment_report(stock_code, user_message)
-                                logger.info(f"投资报告生成成功")
-                                ai_response = f"已为您生成{report_result.get('stock_name', stock_code)}的投资报告！\n\n报告摘要：\n{report_result['summary']}\n\n"
-                                ai_response += f"综合评级：{report_result['rating']}\n目标价格：{report_result['target_price']}\n风险等级：{report_result['risk_level']}\n"
-                                ai_response += f"您可以下载完整报告：[报告下载链接](http://localhost:8000/api/reports/{report_result.get('report_id', '')})\n"
                                 report_id = report_result.get("report_id", "")
-                                report_generated = True
+                                if report_id:
+                                    logger.info("投资报告生成成功")
+                                    ai_response = f"已为您生成{report_result.get('stock_name', stock_code)}的投资报告！\n\n报告摘要：\n{report_result.get('summary', '')}\n\n"
+                                    ai_response += f"综合评级：{report_result.get('rating', '')}\n目标价格：{report_result.get('target_price', '')}\n风险等级：{report_result.get('risk_level', '')}\n"
+                                    ai_response += f"您可以下载完整报告：[报告下载链接](/api/download/{report_id})\n"
+                                    report_generated = True
+                                else:
+                                    logger.error("投资报告生成失败")
+                                    ai_response = "投资报告生成失败，请稍后重试。"
                             else:
                                 # 用户只是要求分析，生成快速分析
                                 logger.info(f"开始为股票代码 {stock_code} 生成快速投资分析")

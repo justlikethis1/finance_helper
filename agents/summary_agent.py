@@ -59,6 +59,8 @@ class SummaryDecisionAgent:
             
             # 5. 调用模型生成投资报告
             report_content = await model_manager.async_generate_response(prompt)
+            if report_content.startswith(("API调用失败:", "API响应格式错误", "生成失败:")):
+                raise RuntimeError(report_content)
             
             # 6. 生成报告ID
             report_id = str(uuid.uuid4())
@@ -71,6 +73,8 @@ class SummaryDecisionAgent:
             # 8. 生成Word格式报告
             docx_path = os.path.join(self.reports_dir, f"{report_id}.docx")
             self._convert_md_to_docx(report_content, docx_path)
+            if not os.path.isfile(docx_path):
+                raise RuntimeError("Word报告未能生成")
             
             # 9. 解析报告内容，提取关键信息
             report_info = self._parse_report(report_content)
