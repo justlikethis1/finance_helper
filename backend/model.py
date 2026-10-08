@@ -35,6 +35,9 @@ class ModelManager:
     
     def load_model(self):
         """加载模型（DeepSeek API无需本地加载）"""
+        if not DEEPSEEK_API_KEY:
+            logger.error("未配置DEEPSEEK_API_KEY")
+            return False
         logger.info("使用DeepSeek API，无需本地模型加载")
         return True
     
@@ -72,7 +75,7 @@ class ModelManager:
             # 设置请求头
             headers = {
                 "Content-Type": "application/json",
-                "Authorization": f"Bearer {DEEPSEEK_API_KEY}"
+                "Authorization": "Bearer " + DEEPSEEK_API_KEY
             }
             
             # 发送API请求

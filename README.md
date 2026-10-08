@@ -202,7 +202,6 @@ TICKFLOW_API_KEY=your_tickflow_api_key
 
 ### 1. 启动服务
 ```bash
-cd backend
 python main.py
 ```
 
